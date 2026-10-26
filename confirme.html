@@ -3,16 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#005BFD">
+<meta name="theme-color" content="#3AB4FF">
 <title>Adresse confirmée — PR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%}
-body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 18px;
-  background:#005BFD linear-gradient(135deg,#33C5FA 0%,#005BFD 55%,#0129CD 100%);background-attachment:fixed;
+html{margin:0;min-height:100%;min-height:100dvh;background-color:#0237D6;background-image:linear-gradient(180deg,#3AB4FF 0%,#005BFD 42%,#0237D6 100%);background-repeat:no-repeat;background-size:100% 100%}
+body{margin:0}
+body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 18px;padding-top:max(32px,env(safe-area-inset-top));padding-bottom:max(32px,env(safe-area-inset-bottom));
+  background:transparent;
   font-family:"Alexandria",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#0B1220;position:relative;overflow-x:hidden}
 .logo{display:block;width:128px;height:auto;margin:0 0 26px}
 .carte{position:relative;z-index:1;width:100%;max-width:440px;background:#fff;border-radius:28px;padding:38px 28px 30px;text-align:center;
