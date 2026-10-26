@@ -1,16 +1,27 @@
-:root{--bg:#fff;--fg:#14171c;--muted:#5a6270;--brand:#005BFD;--card:#f3f6fb;--line:#e1e6ee}
-@media (prefers-color-scheme:dark){:root{--bg:#0d0f13;--fg:#eef1f6;--muted:#9aa4b2;--brand:#5b9bff;--card:#171b22;--line:#262c36}}
+@import url("https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800&display=swap");
+:root{--bg:#EEF2FA;--panel:#fff;--fg:#0B1220;--muted:#5A6577;--brand:#005BFD;--card:#F3F6FC;--line:#E1E7F2;--shadow:0 18px 50px rgba(1,41,205,.14),0 4px 14px rgba(1,41,205,.08)}
+@media (prefers-color-scheme:dark){:root{--bg:#0D1018;--panel:#161B25;--fg:#EEF1F7;--muted:#9AA6B8;--brand:#5B9BFF;--card:#1D2430;--line:#283142;--shadow:0 18px 50px rgba(0,0,0,.45)}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-header{background:#005BFD;color:#fff;padding:28px 20px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 "Alexandria",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+header{position:relative;overflow:hidden;color:#fff;padding:34px 20px 58px;background:#005BFD linear-gradient(135deg,#33C5FA 0%,#005BFD 55%,#0129CD 100%)}
+header::before,header::after{content:"";position:absolute;pointer-events:none;background:#fff;clip-path:polygon(50% 0,59% 41%,100% 50%,59% 59%,50% 100%,41% 59%,0 50%,41% 41%);filter:drop-shadow(0 0 6px rgba(255,255,255,.7))}
+header::before{width:22px;height:22px;top:22px;right:12%;opacity:.9}
+header::after{width:14px;height:14px;bottom:34px;right:24%;opacity:.75;background:#FFD666}
 header div,main{max-width:760px;margin:0 auto}
-header h1{margin:0;font-size:30px;letter-spacing:-.5px}
-header p{margin:4px 0 0;opacity:.85}
-main{padding:28px 20px 60px}
-h2{margin-top:36px;font-size:22px}
-a{color:var(--brand)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0}
-nav{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
-nav a{color:#fff;opacity:.9}
-.maj{color:var(--muted);font-size:14px}
-li{margin:6px 0}
+header h1{margin:0;width:112px;height:56px;overflow:hidden;text-indent:-9999px;background:url("logo-pr-blanc.png") no-repeat left center/contain}
+header p{margin:10px 0 0;font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.2px;color:#fff}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+nav a{color:#fff;text-decoration:none;font-size:13px;font-weight:600;line-height:18px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28)}
+nav a:hover{background:rgba(255,255,255,.3)}
+main{position:relative;z-index:1;width:calc(100% - 28px);margin:-30px auto 26px;background:var(--panel);border-radius:26px;padding:26px 26px 40px;box-shadow:var(--shadow)}
+h2{margin:34px 0 10px;font-size:20px;line-height:26px;font-weight:800;letter-spacing:-.2px;padding-left:12px;border-left:4px solid var(--brand)}
+h2:first-of-type{margin-top:22px}
+p{margin:0 0 14px}
+a{color:var(--brand);font-weight:600}
+strong{font-weight:700}
+ul,ol{padding-left:22px}
+li{margin:7px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin:14px 0}
+.maj{display:inline-block;color:var(--muted);font-size:13px;line-height:18px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin:0 0 18px}
+body::after{content:"PR · Le réseau social des coureurs";display:block;text-align:center;color:var(--muted);font-size:13px;padding:6px 20px 36px}
+@media (max-width:420px){main{padding:22px 18px 34px;border-radius:22px}header p{font-size:20px}}
