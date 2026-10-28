@@ -4,8 +4,9 @@
   (dépôt public noasis9/pr-support). Le bouton et le code du mail de connexion
   (supabase/emails/code-connexion.html) mènent ici avec #code=123456&h=<empreinte> :
   la page rouvre aussitôt l'app sur prscaffoldtmp://login?code=…&h=… (code rempli et
-  validé tout seul), et propose en secours « Copier le code » (dans PR, toucher les
-  cases colle le code). À changer si le « scheme » de l'app change (app.json).
+  validé tout seul), avec un bouton « Ouvrir PR » en secours (le bouton « Copier le code »
+  a été retiré à la demande de l'utilisateur, 2026-10-27). À changer si le « scheme » de
+  l'app change (app.json).
   Ne marche pas avec Expo Go (autre adresse d'app) : seulement avec un build EAS.
 -->
 <html lang="fr">
@@ -38,7 +39,8 @@
       p { margin: 0 0 22px; font-size: 15px; line-height: 22px; color: #3b4557; }
       .code {
         display: inline-block; margin: 0 0 24px; padding: 14px 14px 14px 24px; border-radius: 16px; border: 0;
-        background: #eef2fa; color: #005bfd; font-family: inherit; font-size: 34px; font-weight: 800; letter-spacing: 10px; cursor: pointer;
+        background: #eef2fa; color: #005bfd; font-family: inherit; font-size: 34px; font-weight: 800; letter-spacing: 10px;
+        -webkit-user-select: all; user-select: all;
       }
       .bouton {
         display: block; width: 100%; padding: 16px; border-radius: 999px; border: 0; cursor: pointer;
@@ -54,11 +56,9 @@
       <div class="entete"><img src="logo-pr-blanc.png" alt="PR" /></div>
       <div class="corps">
         <h1>Ouverture de PR…</h1>
-        <p>Si l'app ne s'ouvre pas toute seule, touche « Ouvrir PR » ou copie le code.</p>
-        <button class="code" id="code" type="button" aria-label="Copier le code"></button>
+        <p>Si l'app ne s'ouvre pas toute seule, touche « Ouvrir PR ».</p>
+        <div class="code" id="code"></div>
         <a class="bouton principal" id="ouvrir" href="#">Ouvrir PR</a>
-        <button class="bouton secondaire" id="copier" type="button">Copier le code</button>
-        <p class="aide">Dans PR, touche les cases du code pour le coller.</p>
       </div>
     </div>
     <script>
@@ -68,24 +68,6 @@
       var lien = 'prscaffoldtmp://login?code=' + code + '&h=' + encodeURIComponent(empreinte);
       document.getElementById('code').textContent = code;
       document.getElementById('ouvrir').href = lien;
-
-      function copier() {
-        var bouton = document.getElementById('copier');
-        var fini = function () { bouton.textContent = 'Code copié ✓'; };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(code).then(fini, fini);
-        } else {
-          var champ = document.createElement('textarea');
-          champ.value = code;
-          document.body.appendChild(champ);
-          champ.select();
-          document.execCommand('copy');
-          document.body.removeChild(champ);
-          fini();
-        }
-      }
-      document.getElementById('copier').addEventListener('click', copier);
-      document.getElementById('code').addEventListener('click', copier);
 
       if (code && empreinte) window.location.href = lien;
     </script>
