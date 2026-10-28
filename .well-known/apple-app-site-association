@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["DCQ2HN7UNV.com.prapp.running"],
+        "components": [
+          { "/": "/ouvrir.html", "comment": "Bouton « Ouvrir PR » du mail de connexion" }
+        ]
+      }
+    ]
+  }
+}
