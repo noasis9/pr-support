@@ -1,15 +1,707 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Support — PR</title><link rel="stylesheet" href="style.css"></head><body><header><div><h1>PR</h1><p>Assistance et contact</p><nav><a href="index.html">Support</a><a href="confidentialite.html">Confidentialité</a><a href="conditions.html">Conditions d’utilisation</a></nav></div></header><main>
-<h2>Besoin d’aide ?</h2>
-<p>PR est l’application des coureurs : trouve ta prochaine course, déclare ta participation, retrouve les autres participants et partage tes résultats.</p>
-<div class="card"><strong>Contact</strong><br>Écris-nous à <a href="mailto:pr.app.support@gmail.com">pr.app.support@gmail.com</a>. Nous répondons en général sous quelques jours.</div>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR — Vis chaque course plus fort</title>
+<meta name="description" content="PR rassemble les coureurs autour des courses qui les font vibrer : trouve ta prochaine course, rejoins sa communauté, partage tes objectifs et garde la trace de tes résultats. Disponible sur l’App Store.">
+<meta property="og:title" content="PR — Vis chaque course plus fort">
+<meta property="og:description" content="Trouve ta prochaine course, rejoins sa communauté et partage tes résultats.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://prapp.fr/img/ecran-decouvrir.jpg">
+<meta property="og:url" content="https://prapp.fr/">
+<link rel="canonical" href="https://prapp.fr/">
+<meta name="apple-itunes-app" content="app-id=6817038274">
+<meta name="theme-color" content="#005BFD">
+<link rel="icon" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+  --bleu:#005BFD;
+  --bleu-fonce:#0030B8;
+  --bleu-clair:#E8F0FF;
+  --noir:#0B0B0F;
+  --gris:#5E6068;
+  --fond:#FFFFFF;
+  --carte:#F4F6FA;
+  --trait:rgba(11,11,15,.1);
+  --marge:20px;
+  --max:1120px;
+  --rayon-ecran:14% / 6.4%;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --noir:#F4F4F6;
+    --gris:#A9ABB3;
+    --fond:#1F1F22;
+    --carte:#2B2B2F;
+    --bleu-clair:#1B2B4D;
+    --trait:rgba(255,255,255,.12);
+  }
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{
+  font-family:'Alexandria',system-ui,-apple-system,sans-serif;
+  background:var(--fond);color:var(--noir);
+  line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+main{overflow-x:clip}
+img{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--marge)}
 
-<h2>Questions fréquentes</h2>
-<p><strong>Comment supprimer mon compte ?</strong><br>Dans l’app : Profil → ⚙️ Paramètres → « Supprimer mon compte ». Ton compte et tes données sont supprimés. Sans accès à l’app, écris-nous depuis l’adresse e-mail de ton compte.</p>
-<p><strong>Comment modifier mon e-mail ou mon mot de passe ?</strong><br>Profil → ⚙️ Paramètres → Compte.</p>
-<p><strong>Comment signaler un contenu ou un utilisateur abusif ?</strong><br>Depuis l’app avec le bouton « Signaler », ou par e-mail à l’adresse ci-dessus en indiquant le profil ou la publication concernés. Nous traitons les signalements sous 24 heures et retirons les contenus qui enfreignent les <a href="conditions.html">conditions d’utilisation</a>.</p>
-<p><strong>Une course est absente ou comporte une erreur ?</strong><br>Tu peux la proposer depuis l’app, ou nous l’envoyer par e-mail avec son nom, sa date et son lieu.</p>
-<p><strong>Je ne reçois pas l’e-mail de confirmation.</strong><br>Vérifie tes courriers indésirables, puis écris-nous si rien n’arrive.</p>
+/* Un écran d’app, tel quel : coins arrondis et ombre, rien d’autre */
+.ecran{
+  display:block;width:100%;height:auto;aspect-ratio:640/1391;
+  border-radius:var(--rayon-ecran);
+  box-shadow:0 0 0 1px rgba(0,0,0,.07),0 24px 50px rgba(0,25,100,.28);
+  background:#fff;
+}
 
-<h2>Documents</h2>
-<ul><li><a href="confidentialite.html">Politique de confidentialité</a></li><li><a href="conditions.html">Conditions d’utilisation</a></li></ul>
-</main></body></html>
+/* Apparition au défilement */
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.js .rv.vu{opacity:1;transform:none}
+
+/* ── Barre du haut ── */
+nav.haut{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  transition:background .3s,box-shadow .3s,backdrop-filter .3s;
+}
+nav.haut .in{
+  max-width:var(--max);margin:0 auto;padding:14px var(--marge);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+nav.haut img{height:32px;width:auto}
+nav.haut ul{list-style:none;display:flex;gap:6px;padding:0}
+nav.haut ul a{
+  display:block;padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;
+  color:rgba(255,255,255,.9);text-decoration:none;transition:background .2s;
+}
+nav.haut ul a:hover{background:rgba(255,255,255,.18)}
+nav.haut .telecharger{
+  font-size:14px;font-weight:700;text-decoration:none;color:var(--bleu-fonce);
+  background:#fff;padding:9px 18px;border-radius:999px;
+  transition:transform .2s;
+}
+nav.haut .telecharger:hover{transform:scale(1.05)}
+nav.haut.fond{
+  background:rgba(0,48,184,.82);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 6px 24px rgba(0,20,90,.2);
+}
+
+/* ── Héros ── */
+.hero{
+  position:relative;overflow:hidden;color:#fff;
+  background:
+    radial-gradient(900px 500px at 85% 15%,rgba(120,170,255,.55),transparent 60%),
+    linear-gradient(160deg,#4C8DFF 0%,#005BFD 45%,#0030B8 100%);
+  padding:128px 0 96px;
+}
+.hero .piste{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.5}
+.hero .piste path{fill:none;stroke:rgba(255,255,255,.35);stroke-width:2;stroke-dasharray:3 14;stroke-linecap:round;animation:defile 40s linear infinite}
+@keyframes defile{to{stroke-dashoffset:-1000}}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(38px,6vw,66px);line-height:1.05;font-weight:800;letter-spacing:-.02em}
+.mot{
+  display:inline-block;color:#fff;position:relative;
+  transition:opacity .35s ease,transform .35s ease;
+  text-decoration:underline;text-decoration-color:rgba(255,255,255,.45);text-decoration-thickness:5px;text-underline-offset:8px;
+}
+.mot.sort{opacity:0;transform:translateY(-14px)}
+.mot.entre{opacity:0;transform:translateY(14px);transition:none}
+.hero p.sous{margin-top:22px;font-size:clamp(16px,2vw,19px);max-width:490px;color:rgba(255,255,255,.9)}
+
+.puces{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px;max-width:520px}
+.puce{
+  font:inherit;font-weight:700;font-size:15px;cursor:pointer;
+  padding:11px 20px;border-radius:999px;border:2px solid #fff;
+  background:#fff;color:var(--bleu-fonce);
+  box-shadow:0 8px 20px rgba(0,20,90,.22);
+  transition:transform .25s cubic-bezier(.3,1.6,.5,1),background .2s,color .2s;
+}
+.puce:nth-child(even){background:transparent;color:#fff;box-shadow:none}
+.puce:nth-child(1){--r:-3deg}.puce:nth-child(2){--r:2deg}.puce:nth-child(3){--r:-2deg}
+.puce:nth-child(4){--r:3deg}.puce:nth-child(5){--r:-1.5deg}
+.puce{transform:rotate(var(--r,0deg))}
+.puce:hover{transform:rotate(0deg) scale(1.1) translateY(-2px)}
+@media (prefers-reduced-motion:no-preference){
+  .puce{animation:saute 5s ease-in-out infinite}
+  .puce:nth-child(2){animation-delay:-1s}.puce:nth-child(3){animation-delay:-2s}
+  .puce:nth-child(4){animation-delay:-3s}.puce:nth-child(5){animation-delay:-4s}
+  @keyframes saute{50%{translate:0 -6px}}
+}
+
+.boutons-store{margin-top:30px;display:flex;flex-wrap:wrap;gap:12px}
+.store{
+  position:relative;display:inline-flex;align-items:center;gap:12px;
+  background:#0B0B0F;color:#fff;text-decoration:none;
+  padding:11px 22px 11px 18px;border-radius:16px;
+  border:1px solid rgba(255,255,255,.25);
+  transition:transform .2s,box-shadow .2s;
+}
+.store:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,15,80,.4)}
+.store svg{width:26px;height:26px;flex:none}
+.store small{display:block;font-size:11px;font-weight:500;opacity:.85;line-height:1.1}
+.store b{display:block;font-size:18px;font-weight:700;line-height:1.2}
+.store.bientot{opacity:.8;cursor:default}
+.store.bientot:hover{transform:none;box-shadow:none}
+.store .tag{
+  position:absolute;top:-9px;right:-6px;background:#FFC83D;color:#0B0B0F;
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;
+  transform:rotate(4deg);
+}
+
+.telephones{position:relative;height:600px;width:100%;max-width:470px;justify-self:center}
+.tel{position:absolute;will-change:transform}
+.tel img{
+  animation:none;
+}
+@media (prefers-reduced-motion:no-preference){
+  .tel img{animation:flotte 7s ease-in-out infinite}
+  .tel.t3 img{animation-duration:8.5s;animation-direction:reverse}
+  .tel.t1 img{animation-duration:9s}
+  @keyframes flotte{50%{translate:0 -12px}}
+}
+.tel.t1{width:200px;left:0;top:70px;transform:translateY(calc(var(--py,0)*-.06px)) rotate(-7deg)}
+.tel.t2{width:240px;left:50%;margin-left:-120px;top:0;z-index:2;transform:translateY(calc(var(--py,0)*-.14px))}
+.tel.t3{width:200px;right:0;top:90px;transform:translateY(calc(var(--py,0)*-.1px)) rotate(7deg)}
+
+/* ── Bandeau défilant ── */
+.defile{overflow:hidden;background:var(--fond);border-bottom:1px solid var(--trait);padding:18px 0}
+.defile .piste-noms{display:flex;gap:44px;width:max-content;animation:marquee 46s linear infinite}
+.defile:hover .piste-noms{animation-play-state:paused}
+.defile span{white-space:nowrap;font-weight:700;font-size:17px;color:var(--gris);display:flex;align-items:center;gap:44px}
+.defile span::after{content:"✦";color:var(--bleu);font-size:14px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ── Sections ── */
+section{padding:92px 0}
+.sur-titre{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bleu);margin-bottom:14px}
+@media (prefers-color-scheme:dark){.sur-titre{color:#4C8DFF}}
+h2{font-size:clamp(28px,4vw,44px);line-height:1.12;font-weight:800;letter-spacing:-.015em;max-width:720px}
+.intro{margin-top:16px;color:var(--gris);font-size:17px;max-width:620px}
+
+/* ── Le parcours : écran collé + étapes ── */
+.parcours{background:var(--carte);padding-bottom:40px}
+.histoire{position:relative;margin-top:40px;display:grid;grid-template-columns:1fr minmax(280px,380px);gap:60px}
+.rail{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px;background:var(--trait)}
+.rail i{position:absolute;left:0;top:0;width:100%;height:calc(var(--p,0)*100%);background:var(--bleu);border-radius:4px}
+.etapes{position:relative;padding-left:48px}
+.etape{
+  position:relative;min-height:80vh;display:flex;flex-direction:column;justify-content:center;
+  opacity:.35;transition:opacity .5s;
+}
+.etape.on{opacity:1}
+.etape::before{
+  content:"";position:absolute;left:-48px;top:50%;width:20px;height:20px;margin:-10px 0 0 -8px;
+  border-radius:50%;background:var(--fond);border:4px solid var(--trait);
+  transition:background .4s,border-color .4s,transform .4s;
+}
+.etape.on::before,.etape.fait::before{background:var(--bleu);border-color:var(--bleu)}
+.etape.on::before{transform:scale(1.35)}
+.etape .km{font-size:13px;font-weight:700;color:var(--bleu);letter-spacing:.06em;margin-bottom:10px}
+@media (prefers-color-scheme:dark){.etape .km{color:#4C8DFF}}
+.etape h3{font-size:clamp(26px,3.4vw,36px);line-height:1.15;font-weight:800;letter-spacing:-.01em}
+.etape p{margin-top:14px;color:var(--gris);font-size:17px;max-width:460px}
+.etape .step-img{display:none}
+.colle{position:relative}
+.colle .cadre{position:sticky;top:calc(50vh - min(40vh,320px));height:min(80vh,640px);aspect-ratio:640/1391;margin:0 auto}
+.colle .cadre .ecran{position:absolute;inset:0;height:100%;opacity:0;transform:scale(.96);transition:opacity .5s,transform .6s cubic-bezier(.2,.7,.2,1)}
+.colle .cadre .ecran.on{opacity:1;transform:none}
+.bulle-live{
+  position:absolute;right:-22px;top:16%;z-index:3;
+  background:var(--fond);color:var(--noir);font-weight:700;font-size:14px;
+  padding:11px 16px;border-radius:16px;box-shadow:0 14px 34px rgba(0,25,100,.25);
+  transition:opacity .25s,transform .35s cubic-bezier(.3,1.6,.5,1);
+  white-space:nowrap;
+}
+.bulle-live.change{opacity:0;transform:translateY(10px) scale(.9)}
+
+/* ── Trois temps ── */
+.trois{margin-top:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.trois .carte{background:var(--carte);border-radius:24px;padding:28px 26px;transition:transform .35s cubic-bezier(.3,1.4,.5,1),box-shadow .35s}
+.trois .carte:hover{transform:translateY(-8px) rotate(-.6deg);box-shadow:0 22px 40px rgba(0,30,120,.14)}
+.trois .num{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--bleu);color:#fff;font-weight:700;margin-bottom:16px}
+.trois h3{font-size:20px;font-weight:700;margin-bottom:8px}
+.trois p{color:var(--gris);font-size:15px}
+
+/* ── Démo Découvrir ── */
+.demo-grille{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.appli{background:var(--carte);border-radius:30px;padding:22px;box-shadow:0 30px 60px rgba(0,30,120,.14)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.pills button{
+  font:inherit;font-weight:600;font-size:14px;cursor:pointer;
+  padding:9px 18px;border-radius:999px;border:1.5px solid var(--trait);
+  background:var(--fond);color:var(--noir);transition:all .25s cubic-bezier(.3,1.5,.5,1);
+}
+.pills button:hover{transform:translateY(-2px)}
+.pills button.on{background:var(--bleu);border-color:var(--bleu);color:#fff;transform:scale(1.06)}
+.compte{font-size:14px;font-weight:600;color:var(--bleu);margin:2px 0 12px}
+@media (prefers-color-scheme:dark){.compte{color:#4C8DFF}}
+.liste{display:grid;gap:12px}
+.course{
+  display:grid;grid-template-columns:92px 1fr;gap:14px;align-items:center;
+  background:var(--fond);border-radius:18px;overflow:hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,.07);
+  max-height:130px;transition:opacity .35s,transform .45s cubic-bezier(.2,.7,.2,1),max-height .45s,margin .45s;
+}
+.course.cache{opacity:0;transform:scale(.92) translateY(10px);max-height:0;margin-bottom:-12px;pointer-events:none}
+.course img{width:92px;height:100%;min-height:98px;object-fit:cover}
+.course .txt{padding:12px 14px 12px 0}
+.course h4{font-size:15px;font-weight:700;line-height:1.25}
+.course .qd{font-size:12.5px;color:var(--gris);margin-top:2px}
+.course .dist{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.course .dist b{font-size:12px;font-weight:700;color:var(--bleu);background:var(--bleu-clair);padding:3px 10px;border-radius:999px;transition:background .3s,color .3s}
+@media (prefers-color-scheme:dark){.course .dist b{color:#7DAAFF}}
+.course .dist b.sel{background:var(--bleu);color:#fff}
+.petit{margin-top:14px;font-size:13px;color:var(--gris);text-align:center}
+
+/* ── Fonctionnalités ── */
+.fonctions{margin-top:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.fonction{border:1.5px solid var(--trait);border-radius:24px;padding:26px;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .3s,box-shadow .35s}
+.fonction:hover{transform:translateY(-6px);border-color:var(--bleu);box-shadow:0 18px 36px rgba(0,60,200,.14)}
+.fonction .icone{width:46px;height:46px;border-radius:14px;background:var(--bleu-clair);display:grid;place-items:center;font-size:22px;margin-bottom:16px;transition:transform .4s cubic-bezier(.3,1.8,.5,1)}
+.fonction:hover .icone{transform:rotate(-10deg) scale(1.15)}
+.fonction h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.fonction p{color:var(--gris);font-size:15px}
+
+/* ── Chiffres ── */
+.chiffres{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+.chiffre{background:var(--bleu);color:#fff;border-radius:24px;padding:30px 24px;position:relative;overflow:hidden}
+.chiffre::after{content:"";position:absolute;right:-30px;bottom:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.1)}
+.chiffre b{display:block;font-size:clamp(36px,4.6vw,54px);font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.chiffre span{display:block;margin-top:10px;font-size:15px;opacity:.92}
+
+/* ── FAQ ── */
+.faq{margin-top:40px;max-width:780px;display:grid;gap:10px}
+.faq details{border:1.5px solid var(--trait);border-radius:20px;padding:0 22px;transition:border-color .25s,background .25s}
+.faq details[open]{border-color:var(--bleu);background:var(--carte)}
+.faq summary{
+  list-style:none;cursor:pointer;padding:19px 0;font-weight:700;font-size:16.5px;
+  display:flex;justify-content:space-between;gap:16px;align-items:center;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"+";flex:none;width:30px;height:30px;border-radius:50%;background:var(--bleu-clair);color:var(--bleu);
+  display:grid;place-items:center;font-size:20px;font-weight:700;transition:transform .3s,background .3s,color .3s;
+}
+.faq details[open] summary::after{transform:rotate(45deg);background:var(--bleu);color:#fff}
+.faq .rep{padding:0 0 20px;color:var(--gris);font-size:15.5px;animation:ouvre .35s ease}
+@keyframes ouvre{from{opacity:0;transform:translateY(-6px)}}
+.faq .rep a{color:var(--bleu);font-weight:600}
+
+/* ── Appel final ── */
+.final{text-align:center;color:#fff;position:relative;overflow:hidden;background:linear-gradient(160deg,#4C8DFF 0%,#005BFD 50%,#0030B8 100%)}
+.final h2{margin:0 auto}
+.final p{margin:16px auto 0;max-width:520px;color:rgba(255,255,255,.9);font-size:17px}
+.final .boutons-store{justify-content:center}
+.final img.logo{height:60px;margin:0 auto 24px;width:auto}
+
+footer{padding:36px 0 48px;color:var(--gris);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;align-items:center}
+footer nav{display:flex;flex-wrap:wrap;gap:8px 22px}
+footer a{text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* ── Tablette / mobile ── */
+@media (max-width:960px){
+  nav.haut ul{display:none}
+  .hero{padding:104px 0 64px}
+  .hero .wrap{grid-template-columns:1fr;gap:34px}
+  .telephones{height:470px;max-width:360px}
+  .tel.t1,.tel.t3{width:150px}
+  .tel.t2{width:180px;margin-left:-90px}
+  .hero .piste{display:none}
+  section{padding:64px 0}
+  .histoire{grid-template-columns:1fr;gap:0}
+  .colle{display:none}
+  .etape{min-height:0;padding:34px 0 40px;opacity:1}
+  .etape .step-img{display:block;width:min(240px,60%);margin-top:24px}
+  .etape.on::before,.etape::before{top:38px}
+  .demo-grille{grid-template-columns:1fr;gap:34px}
+  .trois,.fonctions{grid-template-columns:1fr}
+  .chiffres{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .defile .piste-noms,.hero .piste path{animation:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="haut" id="haut">
+  <div class="in">
+    <a href="#top" aria-label="PR"><img src="img/logo-pr-blanc.png" alt="PR"></a>
+    <ul>
+      <li><a href="#parcours">Le parcours</a></li>
+      <li><a href="#decouvrir">Découvrir</a></li>
+      <li><a href="#fonctions">Fonctions</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="telecharger" href="https://apps.apple.com/app/pr/id6817038274" target="_blank" rel="noopener">Télécharger</a>
+  </div>
+</nav>
+
+<main id="top">
+  <!-- ═════ HÉROS ═════ -->
+  <div class="hero">
+    <svg class="piste" viewBox="0 0 1200 700" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-50 560 C 200 620, 300 380, 560 420 S 900 640, 1250 260"/>
+      <path d="M-50 610 C 220 680, 330 440, 580 480 S 920 700, 1250 320"/>
+    </svg>
+    <div class="wrap">
+      <div>
+        <h1>Vis chaque course plus <span class="mot" id="mot">fort</span>.</h1>
+        <p class="sous">PR rassemble les coureurs autour des courses qui les font vibrer. Trouve ton prochain défi, rejoins sa communauté et garde la trace de tous tes résultats.</p>
+        <div class="puces" aria-label="Aller à une étape">
+          <button class="puce" data-etape="0">Découvre</button>
+          <button class="puce" data-etape="1">Déclare</button>
+          <button class="puce" data-etape="2">Partage</button>
+          <button class="puce" data-etape="4">Célèbre</button>
+          <button class="puce" data-etape="5">Progresse</button>
+        </div>
+        <div class="boutons-store">
+          <a class="store" href="https://apps.apple.com/app/pr/id6817038274" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+            <span><small>Télécharger sur</small><b>App Store</b></span>
+          </a>
+          <span class="store bientot" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#00E0FF" d="M3.6 2.2 13.4 12 3.6 21.8c-.4-.2-.6-.6-.6-1.100V3.300c0-.5.2-.9.6-1.100z"/><path fill="#FFD400" d="m17 8.400-3.600 3.600L17 15.600l4-2.300c.8-.5.8-1.700 0-2.200z"/><path fill="#FF3A44" d="M13.400 12 3.600 21.800c.4.200.9.200 1.400-.1L17 15.600z"/><path fill="#00F076" d="M17 8.400 5 2.300c-.5-.3-1-.3-1.400-.1z"/></svg>
+            <span><small>Disponible sur</small><b>Google Play</b></span>
+            <em class="tag" style="font-style:normal">Bientôt</em>
+          </span>
+        </div>
+      </div>
+      <div class="telephones" id="telephones" aria-hidden="true">
+        <div class="tel t1"><img class="ecran" src="img/ecran-accueil.jpg" alt=""></div>
+        <div class="tel t3"><img class="ecran" src="img/ecran-profil.jpg" alt=""></div>
+        <div class="tel t2"><img class="ecran" src="img/ecran-decouvrir.jpg" alt=""></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════ BANDEAU DE COURSES ═════ -->
+  <div class="defile" aria-hidden="true">
+    <div class="piste-noms" id="noms"></div>
+  </div>
+
+  <!-- ═════ LE PARCOURS (écran collé) ═════ -->
+  <section class="parcours" id="parcours">
+    <div class="wrap">
+      <p class="sur-titre rv">Le parcours</p>
+      <h2 class="rv">De la ligne de départ à la ligne d’arrivée.</h2>
+      <p class="intro rv">Fais défiler : voici ce que PR t’apporte, étape par étape.</p>
+
+      <div class="histoire" id="histoire">
+        <div class="rail" aria-hidden="true"><i id="rail"></i></div>
+        <div class="etapes">
+          <article class="etape" data-ecran="decouvrir" data-bulle="🔥 52 participants PR">
+            <p class="km">KM 1 · TROUVE</p>
+            <h3>Trouve ta prochaine course.</h3>
+            <p>Route ou trail, du 5K au 42K : explore les événements, filtre par distance, date ou lieu, et vois qui y court déjà.</p>
+            <img class="ecran step-img" src="img/ecran-decouvrir.jpg" alt="Découvrir : la liste des courses" loading="lazy">
+          </article>
+          <article class="etape" data-ecran="declaration" data-bulle="🎯 Objectif 45:00">
+            <p class="km">KM 2 · DÉCLARE</p>
+            <h3>Déclare ta participation et ton objectif.</h3>
+            <p>Un « Je participe », un chrono visé, et ta course entre dans ton calendrier. Tu peux ajuster ton objectif jusqu’au jour J.</p>
+            <img class="ecran step-img" src="img/ecran-declaration.jpg" alt="Modifier ma déclaration" loading="lazy">
+          </article>
+          <article class="etape" data-ecran="invitation" data-bulle="💌 Invitation à participer">
+            <p class="km">KM 3 · PARTAGE</p>
+            <h3>Invite tes amis sur la ligne de départ.</h3>
+            <p>Envoie une invitation en un geste, discute en privé ou en groupe, et trouve les amis qui courent la même course que toi.</p>
+            <img class="ecran step-img" src="img/ecran-invitation.jpg" alt="Une invitation dans la messagerie" loading="lazy">
+          </article>
+          <article class="etape" data-ecran="communaute" data-bulle="💬 Une communauté par course">
+            <p class="km">KM 4 · COMMUNAUTÉ</p>
+            <h3>Une communauté pour chaque course.</h3>
+            <p>Entraînements, conseils, covoiturage : ouvre un sujet ou réponds aux autres participants avant le grand jour.</p>
+            <img class="ecran step-img" src="img/ecran-communaute.jpg" alt="Les sujets de la communauté" loading="lazy">
+          </article>
+          <article class="etape" data-ecran="resultat" data-bulle="🏅 47:15 · Nouveau résultat">
+            <p class="km">KM 5 · CÉLÈBRE</p>
+            <h3>Célèbre et partage chaque arrivée.</h3>
+            <p>Ajoute ton chrono, publie ta carte de résultat et laisse tes amis te féliciter. Chaque arrivée mérite sa place.</p>
+            <img class="ecran step-img" src="img/ecran-resultat.jpg" alt="Un nouveau résultat publié" loading="lazy">
+          </article>
+          <article class="etape" data-ecran="profil" data-bulle="🏆 Wall of PR">
+            <p class="km">KM 6 · PROGRESSE</p>
+            <h3>Tes records, ton histoire.</h3>
+            <p>Épingle tes meilleurs temps sur ton Wall of PR, retrouve tous tes résultats au même endroit et compare-toi à la communauté.</p>
+            <img class="ecran step-img" src="img/ecran-profil.jpg" alt="Le profil et le Wall of PR" loading="lazy">
+          </article>
+        </div>
+        <div class="colle" aria-hidden="true">
+          <div class="cadre" id="cadre">
+            <img class="ecran on" data-k="decouvrir" src="img/ecran-decouvrir.jpg" alt="">
+            <img class="ecran" data-k="declaration" src="img/ecran-declaration.jpg" alt="">
+            <img class="ecran" data-k="invitation" src="img/ecran-invitation.jpg" alt="">
+            <img class="ecran" data-k="communaute" src="img/ecran-communaute.jpg" alt="">
+            <img class="ecran" data-k="resultat" src="img/ecran-resultat.jpg" alt="">
+            <img class="ecran" data-k="profil" src="img/ecran-profil.jpg" alt="">
+            <div class="bulle-live" id="bulle">🔥 52 participants PR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ DÉMO DÉCOUVRIR ═════ -->
+  <section id="decouvrir">
+    <div class="wrap demo-grille">
+      <div>
+        <p class="sur-titre rv">Essaie</p>
+        <h2 class="rv">Choisis ta distance, PR trie le reste.</h2>
+        <p class="intro rv">Un petit aperçu de l’onglet Découvrir : touche une distance et regarde la liste se mettre à jour. Dans l’app, le catalogue compte 100 événements.</p>
+      </div>
+      <div class="appli rv" style="--d:.1s">
+        <div class="pills" id="pills" role="tablist" aria-label="Distance">
+          <button class="on" data-d="0">Tout</button>
+          <button data-d="5">5K</button>
+          <button data-d="10">10K</button>
+          <button data-d="21">21K</button>
+          <button data-d="42">42K</button>
+        </div>
+        <p class="compte" id="compte">5 événements trouvés</p>
+        <div class="liste" id="liste"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ TROIS TEMPS ═════ -->
+  <section style="padding-top:0" id="trois">
+    <div class="wrap">
+      <p class="sur-titre rv">Une course, trois temps</p>
+      <h2 class="rv">Avant, pendant et après la ligne d’arrivée.</h2>
+      <div class="trois">
+        <div class="carte rv">
+          <div class="num">1</div>
+          <h3>Avant</h3>
+          <p>Trouve ta course, déclare ta participation et affiche ton objectif. Retrouve ceux qui courent le même jour que toi.</p>
+        </div>
+        <div class="carte rv" style="--d:.1s">
+          <div class="num">2</div>
+          <h3>Pendant</h3>
+          <p>Compte les jours, échange avec la communauté de l’événement et partage l’excitation d’une veille de départ.</p>
+        </div>
+        <div class="carte rv" style="--d:.2s">
+          <div class="num">3</div>
+          <h3>Après</h3>
+          <p>Ajoute ton chrono, célèbre ton arrivée et garde chaque course dans ton historique.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ FONCTIONS ═════ -->
+  <section style="padding-top:0" id="fonctions">
+    <div class="wrap">
+      <p class="sur-titre rv">Ce que tu peux faire</p>
+      <h2 class="rv">Tout ce qu’il faut pour vivre tes courses à fond.</h2>
+      <div class="fonctions">
+        <div class="fonction rv"><div class="icone">🔎</div><h3>Trouve ta prochaine course</h3><p>Route ou trail, du 5K au 42K : filtre par distance, date ou lieu, même autour d’une ville.</p></div>
+        <div class="fonction rv" style="--d:.08s"><div class="icone">🔥</div><h3>Rejoins la communauté</h3><p>Retrouve les participants de ta course et prépare le jour J avec eux.</p></div>
+        <div class="fonction rv" style="--d:.16s"><div class="icone">👟</div><h3>Trouve ton allure</h3><p>PR te montre les coureurs qui visent le même objectif que toi, pour courir ensemble.</p></div>
+        <div class="fonction rv"><div class="icone">💬</div><h3>Reste en contact</h3><p>Suis le fil de tes amis, encourage-les, invite-les et discute en privé ou en groupe.</p></div>
+        <div class="fonction rv" style="--d:.08s"><div class="icone">🏅</div><h3>Fais vivre tes résultats</h3><p>Ajoute tes chronos, épingle tes records et suis ta progression, distance par distance.</p></div>
+        <div class="fonction rv" style="--d:.16s"><div class="icone">➕</div><h3>Enrichis PR</h3><p>Il manque un événement ? Propose-le : il est vérifié puis ajouté pour toute la communauté.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ CHIFFRES ═════ -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <p class="sur-titre rv">Le catalogue</p>
+      <h2 class="rv">Les grandes courses de France, déjà dans ta poche.</h2>
+      <div class="chiffres">
+        <div class="chiffre rv"><b data-n="100">100</b><span>événements, vérifiés sur les sites officiels</span></div>
+        <div class="chiffre rv" style="--d:.08s"><b data-n="220" data-plus="1">220+</b><span>courses, route et trail</span></div>
+        <div class="chiffre rv" style="--d:.16s"><b data-n="4" data-suffixe="">4</b><span>distances phares : 5K, 10K, 21K et 42K</span></div>
+        <div class="chiffre rv" style="--d:.24s"><b data-n="0" data-suffixe=" €">0 €</b><span>pour rejoindre la communauté</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ FAQ ═════ -->
+  <section style="padding-top:0" id="faq">
+    <div class="wrap">
+      <p class="sur-titre rv">Questions</p>
+      <h2 class="rv">Tout savoir sur PR.</h2>
+      <div class="faq" id="faqListe">
+        <details class="rv"><summary>PR est-elle gratuite ?</summary><div class="rep">Oui, PR est gratuite. L’app est disponible sur l’App Store pour iPhone, et arrive bientôt sur Google Play pour Android.</div></details>
+        <details class="rv"><summary>Quelles courses trouve-t-on dans PR ?</summary><div class="rep">Des événements de course à pied sur route et en trail, du 5K au marathon, avec leurs dates, leurs lieux et leurs distances, vérifiés sur les sites officiels des organisateurs.</div></details>
+        <details class="rv"><summary>Ma course n’est pas dans PR, que faire ?</summary><div class="rep">Propose-la depuis l’app : elle est vérifiée puis ajoutée au catalogue pour toute la communauté. Tu peux aussi l’ajouter à tes courses en attendant.</div></details>
+        <details class="rv"><summary>Puis-je ajouter mes anciens résultats ?</summary><div class="rep">Oui. Ajoute tes chronos passés, choisis tes records pour ton Wall of PR et retrouve tout ton historique sur ton profil.</div></details>
+        <details class="rv"><summary>Qui voit mon profil et mes publications ?</summary><div class="rep">Tu partages avec tes amis et la communauté PR. Tous les détails sont dans notre <a href="confidentialite.html">politique de confidentialité</a>.</div></details>
+        <details class="rv"><summary>Comment vous contacter ?</summary><div class="rep">Écris-nous à <a href="mailto:pr.app.support@gmail.com">pr.app.support@gmail.com</a> ou passe par la <a href="support.html">page d’aide</a>.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ APPEL FINAL ═════ -->
+  <section class="final">
+    <div class="wrap">
+      <img class="logo rv" src="img/logo-pr-blanc.png" alt="PR">
+      <h2 class="rv">Prêt pour ton prochain dossard ?</h2>
+      <p class="rv">Que tu prépares ta première course ou ton prochain record, PR t’aide à découvrir, partager et célébrer chaque arrivée.</p>
+      <div class="boutons-store rv">
+        <a class="store" href="https://apps.apple.com/app/pr/id6817038274" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+          <span><small>Télécharger sur</small><b>App Store</b></span>
+        </a>
+        <span class="store bientot" aria-disabled="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#00E0FF" d="M3.6 2.2 13.4 12 3.6 21.8c-.4-.2-.6-.6-.6-1.100V3.300c0-.5.2-.9.6-1.100z"/><path fill="#FFD400" d="m17 8.400-3.600 3.600L17 15.600l4-2.300c.8-.5.8-1.700 0-2.200z"/><path fill="#FF3A44" d="M13.400 12 3.600 21.800c.4.200.9.200 1.400-.1L17 15.600z"/><path fill="#00F076" d="M17 8.400 5 2.300c-.5-.3-1-.3-1.400-.1z"/></svg>
+          <span><small>Disponible sur</small><b>Google Play</b></span>
+          <em class="tag" style="font-style:normal">Bientôt</em>
+        </span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 PR</span>
+    <nav>
+      <a href="support.html">Support</a>
+      <a href="confidentialite.html">Confidentialité</a>
+      <a href="conditions.html">Conditions</a>
+      <a href="mailto:pr.app.support@gmail.com">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const reduit = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const $ = (s,r=document)=>r.querySelector(s), $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+
+  /* Barre du haut : fond au défilement */
+  const haut = $('#haut');
+  const hero = $('.hero');
+
+  /* Mot qui change dans le titre */
+  const mot = $('#mot');
+  if(!reduit){
+    const mots = ['fort','ensemble','loin','mieux'];
+    let i = 0;
+    setInterval(()=>{
+      mot.classList.add('sort');
+      setTimeout(()=>{
+        i = (i+1)%mots.length; mot.textContent = mots[i];
+        mot.classList.remove('sort'); mot.classList.add('entre');
+        void mot.offsetWidth; mot.classList.remove('entre');
+      },350);
+    },2800);
+  }
+
+  /* Bandeau des courses */
+  const noms = ['Marathon de Paris','SaintéLyon','Saucony 10 km de la Tour Eiffel','HOKA Semi Marathon de Paris','Seine-Marathon 76','Les Foulées de Vincennes','10km Paris 17','Marathon de Vannes','Marathon Vert Rennes','Harmonie Mutuelle Marathon de Tours'];
+  const piste = $('#noms');
+  piste.innerHTML = [...noms,...noms].map(n=>`<span>${n}</span>`).join('');
+
+  /* Apparition au défilement */
+  const vus = new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('vu'); vus.unobserve(e.target); }
+  }),{threshold:.15,rootMargin:'0px 0px -6% 0px'});
+  $$('.rv').forEach(el=>vus.observe(el));
+
+  /* Parcours : écran collé, bulle, rail */
+  const etapes = $$('.etape'), ecrans = $$('#cadre .ecran'), bulle = $('#bulle'), rail = $('#rail'), histoire = $('#histoire');
+  let actif = -1;
+  function activer(n){
+    if(n===actif) return; actif = n;
+    etapes.forEach((e,i)=>{ e.classList.toggle('on',i===n); e.classList.toggle('fait',i<n); });
+    const k = etapes[n].dataset.ecran;
+    ecrans.forEach(img=>img.classList.toggle('on',img.dataset.k===k));
+    bulle.classList.add('change');
+    setTimeout(()=>{ bulle.textContent = etapes[n].dataset.bulle; bulle.classList.remove('change'); },200);
+  }
+  const suivi = new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting) activer(etapes.indexOf(e.target));
+  }),{rootMargin:'-45% 0px -45% 0px'});
+  etapes.forEach(e=>suivi.observe(e));
+  activer(0);
+
+  /* Défilement : rail + parallaxe + barre */
+  let tic = false;
+  function maj(){
+    tic = false;
+    const y = scrollY;
+    haut.classList.toggle('fond', y > 40);
+    if(y < innerHeight*1.4) hero.style.setProperty('--py', y), $('#telephones').style.setProperty('--py', y);
+    const r = histoire.getBoundingClientRect();
+    const p = (innerHeight*.5 - r.top) / r.height;
+    rail.parentNode.style.setProperty('--p', Math.max(0,Math.min(1,p)));
+    rail.style.setProperty('--p', Math.max(0,Math.min(1,p)));
+  }
+  addEventListener('scroll',()=>{ if(!tic){ tic = true; requestAnimationFrame(maj); } },{passive:true});
+  addEventListener('resize',maj); maj();
+
+  /* Puces du héros → étape correspondante */
+  $$('.puce').forEach(b=>b.addEventListener('click',()=>{
+    const e = etapes[+b.dataset.etape];
+    const colle = getComputedStyle($('.colle')).display !== 'none';
+    e.scrollIntoView({behavior:reduit?'auto':'smooth',block:colle?'center':'start'});
+  }));
+
+  /* Démo Découvrir */
+  const courses = [
+    {n:'Saucony 10 km de la Tour Eiffel',q:'6 déc. 2026 · Paris',d:[10],i:'saucony'},
+    {n:'Les Foulées de Vincennes',q:'févr. 2027 · Vincennes',d:[5,10],i:'vincennes'},
+    {n:'Seine-Marathon 76',q:'26-27 sept. 2026 · Rouen',d:[10,21,42],i:'seine'},
+    {n:'Marathon Vert Rennes',q:'17-18 oct. 2026 · Rennes',d:[5,10,42],i:'rennes'},
+    {n:'10km Paris 17 Onatera',q:'29 nov. 2026 · Paris',d:[10],i:'paris17'}
+  ];
+  const liste = $('#liste');
+  liste.innerHTML = courses.map(c=>`
+    <div class="course" data-d="${c.d.join(',')}">
+      <img src="img/course-${c.i}.jpg" alt="" loading="lazy">
+      <div class="txt"><h4>${c.n}</h4><div class="qd">${c.q}</div>
+      <div class="dist">${c.d.map(x=>`<b data-x="${x}">${x}K</b>`).join('')}</div></div>
+    </div>`).join('');
+  const cartes = $$('.course',liste), compte = $('#compte');
+  function filtrer(d){
+    let nb = 0;
+    cartes.forEach(c=>{
+      const ok = d===0 || c.dataset.d.split(',').includes(String(d));
+      c.classList.toggle('cache',!ok); if(ok) nb++;
+      $$('b',c).forEach(b=>b.classList.toggle('sel', d!==0 && +b.dataset.x===d));
+    });
+    compte.textContent = nb + (nb>1?' événements trouvés':' événement trouvé');
+  }
+  $$('#pills button').forEach(b=>b.addEventListener('click',()=>{
+    $$('#pills button').forEach(x=>x.classList.toggle('on',x===b));
+    filtrer(+b.dataset.d);
+  }));
+
+  /* Chiffres qui montent */
+  const fin = new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting) return; fin.unobserve(e.target);
+    const el = e.target, cible = +el.dataset.n, plus = el.dataset.plus ? '+' : '', suf = el.dataset.suffixe || '';
+    if(reduit || cible===0){ return; }
+    const t0 = performance.now(), dur = 1400;
+    (function pas(t){
+      const k = Math.min(1,(t-t0)/dur), v = Math.round(cible*(1-Math.pow(1-k,3)));
+      el.textContent = v + plus + suf;
+      if(k<1) requestAnimationFrame(pas);
+    })(t0);
+  }),{threshold:.6});
+  $$('.chiffre b').forEach(b=>fin.observe(b));
+
+  /* FAQ : une seule question ouverte à la fois */
+  const qs = $$('#faqListe details');
+  qs.forEach(d=>d.addEventListener('toggle',()=>{ if(d.open) qs.forEach(o=>{ if(o!==d) o.open = false; }); }));
+})();
+</script>
+</body>
+</html>
