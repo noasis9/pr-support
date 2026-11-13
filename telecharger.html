@@ -79,6 +79,10 @@
       // iPad récents : se présentent comme un Mac mais ont un écran tactile.
       var estIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       var estAndroid = /Android/i.test(ua);
+      // Aperçu depuis n'importe quel appareil : ?plateforme=android ou ?plateforme=ios force l'affichage de cette version.
+      var forcee = new URLSearchParams(location.search).get('plateforme');
+      if (forcee === 'android') { estAndroid = true; estIOS = false; }
+      if (forcee === 'ios') { estIOS = true; estAndroid = false; }
 
       var boutonIOS = document.getElementById('ios');
       var boutonAndroid = document.getElementById('android');
