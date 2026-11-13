@@ -1,0 +1,111 @@
+<!doctype html>
+<!--
+  Page « Télécharger PR » (2026-11-12) — publiée sur le site (dépôt public noasis9/pr-support) à l'adresse
+  https://prapp.fr/telecharger. C'est LE lien que l'app partage quand on invite un ami (components/BoutonInviterSurPR.tsx,
+  constante LIEN_PR) : un seul lien pour tout le monde, la page regarde le téléphone de celui qui l'ouvre et l'envoie
+  tout de suite vers le bon magasin :
+    - iPhone / iPad  -> App Store
+    - Android        -> Play Store (dès que PLAY_STORE_PUBLIC = true ; sinon message « bientôt sur Android »)
+    - ordinateur     -> cette page, avec les boutons des deux magasins
+  Les boutons restent visibles en secours si la redirection automatique ne se fait pas.
+  À FAIRE quand la fiche Google Play devient publique : passer PLAY_STORE_PUBLIC à true.
+  Sans lien avec apple-app-site-association (qui ne concerne que /ouvrir.html) : la page s'ouvre toujours dans le navigateur.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Télécharger PR</title>
+    <meta name="description" content="PR, le réseau social des coureurs : découvre des courses, partage tes résultats et cours avec tes amis." />
+    <meta property="og:title" content="Rejoins-moi sur PR" />
+    <meta property="og:description" content="PR, le réseau social des coureurs : découvre des courses, partage tes résultats et cours avec tes amis." />
+    <meta property="og:url" content="https://prapp.fr/telecharger" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://prapp.fr/icone-pr.png" />
+    <link rel="icon" href="icone-pr.png" />
+    <link rel="apple-touch-icon" href="icone-pr.png" />
+    <style>
+      @font-face { font-family: 'Alexandria'; font-weight: 400; src: url(polices/Alexandria-400.ttf) format('truetype'); }
+      @font-face { font-family: 'Alexandria'; font-weight: 700; src: url(polices/Alexandria-700.ttf) format('truetype'); }
+      @font-face { font-family: 'Alexandria'; font-weight: 800; src: url(polices/Alexandria-800.ttf) format('truetype'); }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 28px 14px;
+        background: #eef2fa;
+        font-family: 'Alexandria', Helvetica, Arial, sans-serif;
+        color: #0b1220;
+      }
+      .carte { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; overflow: hidden; text-align: center; }
+      .entete { background: linear-gradient(135deg, #33c5fa 0%, #005bfd 55%, #0129cd 100%); padding: 30px 20px; }
+      .entete img { width: 110px; height: auto; display: block; margin: 0 auto; }
+      .corps { padding: 30px 28px 32px; }
+      h1 { margin: 0 0 10px; font-size: 22px; line-height: 28px; font-weight: 800; }
+      p { margin: 0 0 22px; font-size: 15px; line-height: 22px; color: #3b4557; }
+      .bouton {
+        display: block; width: 100%; padding: 16px; border-radius: 999px; border: 0; cursor: pointer;
+        font-family: inherit; font-size: 16px; font-weight: 700; text-decoration: none;
+      }
+      .principal { background: #005bfd; color: #fff; margin-bottom: 12px; }
+      .secondaire { background: #fff; color: #005bfd; border: 1.5px solid #c9d6f2; margin-bottom: 12px; }
+      .bientot { background: #eef2fa; color: #6b7585; cursor: default; }
+      .aide { margin: 18px 0 0; font-size: 13px; line-height: 19px; color: #6b7585; }
+      .aide a { color: #005bfd; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div class="carte">
+      <div class="entete"><img src="logo-pr-blanc.png" alt="PR" /></div>
+      <div class="corps">
+        <h1 id="titre">Télécharge PR</h1>
+        <p id="texte">Le réseau social des coureurs : découvre des courses, partage tes résultats et cours avec tes amis.</p>
+        <a class="bouton principal" id="ios" href="https://apps.apple.com/app/pr/id6817038274">Télécharger sur l'App Store</a>
+        <a class="bouton secondaire" id="android" href="https://play.google.com/store/apps/details?id=com.prapp.running">Télécharger sur Google Play</a>
+        <p class="aide" id="aide"></p>
+      </div>
+    </div>
+    <script>
+      // Passer à true quand la fiche Google Play est publique.
+      var PLAY_STORE_PUBLIC = false;
+      var APP_STORE = 'https://apps.apple.com/app/pr/id6817038274';
+      var PLAY_STORE = 'https://play.google.com/store/apps/details?id=com.prapp.running';
+
+      var ua = navigator.userAgent || '';
+      // iPad récents : se présentent comme un Mac mais ont un écran tactile.
+      var estIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      var estAndroid = /Android/i.test(ua);
+
+      var boutonIOS = document.getElementById('ios');
+      var boutonAndroid = document.getElementById('android');
+      var texte = document.getElementById('texte');
+      var aide = document.getElementById('aide');
+
+      // Fiche Google Play pas encore publique : le bouton Android devient un simple message.
+      if (!PLAY_STORE_PUBLIC) {
+        boutonAndroid.removeAttribute('href');
+        boutonAndroid.className = 'bouton bientot';
+        boutonAndroid.textContent = 'Bientôt sur Android';
+      }
+
+      if (estIOS) {
+        texte.textContent = 'Redirection vers l’App Store…';
+        boutonAndroid.style.display = 'none';
+        window.location.replace(APP_STORE);
+      } else if (estAndroid) {
+        boutonIOS.style.display = 'none';
+        if (PLAY_STORE_PUBLIC) {
+          texte.textContent = 'Redirection vers Google Play…';
+          window.location.replace(PLAY_STORE);
+        } else {
+          texte.textContent = 'PR arrive bientôt sur Android. En attendant, tu peux nous écrire pour être prévenu(e) de la sortie.';
+          aide.innerHTML = '<a href="mailto:contact@prapp.fr?subject=PR%20sur%20Android">contact@prapp.fr</a>';
+        }
+      }
+    </script>
+  </body>
+</html>
