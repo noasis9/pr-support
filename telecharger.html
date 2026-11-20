@@ -8,7 +8,12 @@
     - Android        -> Play Store (dès que PLAY_STORE_PUBLIC = true ; sinon message « bientôt sur Android »)
     - ordinateur     -> cette page, avec les boutons des deux magasins
   Les boutons restent visibles en secours si la redirection automatique ne se fait pas.
-  À FAIRE quand la fiche Google Play devient publique : passer PLAY_STORE_PUBLIC à true.
+  2026-11-19 : la fiche Google Play est publique, et la page ÉTIQUETTE chaque lien avec sa source : https://prapp.fr/telecharger?s=<source>
+  (instagram, mail-bouton, mail-qr, klikego-bouton, klikego-qr, site-menu, site-haut, site-bas…). Sans `s` (lien partagé par l'app) : `invitation-app`.
+    - iPhone  : App Store avec `pt` (jeton Apple) + `ct=<source>` -> App Store Connect > Analyse > Campagnes (chiffres des vrais téléchargements).
+    - Android : Google Play avec `referrer=utm_source=<source>` -> Play Console > Acquisition, et lu par l'app au 1er lancement (lib/origineInstallation.ts).
+    - `&os=ios` / `&os=android` force le magasin (boutons du site) ; `?plateforme=` fait de même (ancien nom, gardé).
+  Aucun cookie ni outil de mesure sur cette page : seuls les magasins comptent.
   Sans lien avec apple-app-site-association (qui ne concerne que /ouvrir.html) : la page s'ouvre toujours dans le navigateur.
 -->
 <html lang="fr">
@@ -70,45 +75,43 @@
       </div>
     </div>
     <script>
-      // Passer à true quand la fiche Google Play est publique.
-      var PLAY_STORE_PUBLIC = false;
-      var APP_STORE = 'https://apps.apple.com/app/pr/id6817038274';
-      var PLAY_STORE = 'https://play.google.com/store/apps/details?id=com.prapp.running';
+      // Jeton de campagne Apple (« pt »), le même pour toutes les campagnes (App Store Connect > Analyse > Campagnes).
+      var JETON_APPLE = '129527401';
+      var ID_APPLE = '6817038274';
+      var PAQUET_ANDROID = 'com.prapp.running';
+
+      // Source du lien : lettres, chiffres, tiret, souligné ; 30 caractères au plus (limite d'Apple).
+      var parametres = new URLSearchParams(location.search);
+      var brut = parametres.get('s') || 'invitation-app';
+      var source = brut.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30) || 'invitation-app';
+
+      var APP_STORE = 'https://apps.apple.com/app/pr/id' + ID_APPLE + '?mt=8&pt=' + JETON_APPLE + '&ct=' + encodeURIComponent(source);
+      var PLAY_STORE = 'https://play.google.com/store/apps/details?id=' + PAQUET_ANDROID +
+        '&referrer=' + encodeURIComponent('utm_source=' + source + '&utm_medium=lien');
 
       var ua = navigator.userAgent || '';
       // iPad récents : se présentent comme un Mac mais ont un écran tactile.
       var estIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       var estAndroid = /Android/i.test(ua);
-      // Aperçu depuis n'importe quel appareil : ?plateforme=android ou ?plateforme=ios force l'affichage de cette version.
-      var forcee = new URLSearchParams(location.search).get('plateforme');
+      // Forcer un magasin depuis n'importe quel appareil : &os=ios|android (site) ou ?plateforme=ios|android (ancien nom).
+      var forcee = parametres.get('os') || parametres.get('plateforme');
       if (forcee === 'android') { estAndroid = true; estIOS = false; }
       if (forcee === 'ios') { estIOS = true; estAndroid = false; }
 
       var boutonIOS = document.getElementById('ios');
       var boutonAndroid = document.getElementById('android');
       var texte = document.getElementById('texte');
-      var aide = document.getElementById('aide');
-
-      // Fiche Google Play pas encore publique : le bouton Android devient un simple message.
-      if (!PLAY_STORE_PUBLIC) {
-        boutonAndroid.removeAttribute('href');
-        boutonAndroid.className = 'bouton bientot';
-        boutonAndroid.textContent = 'Bientôt sur Android';
-      }
+      boutonIOS.href = APP_STORE;
+      boutonAndroid.href = PLAY_STORE;
 
       if (estIOS) {
         texte.textContent = 'Redirection vers l’App Store…';
         boutonAndroid.style.display = 'none';
         window.location.replace(APP_STORE);
       } else if (estAndroid) {
+        texte.textContent = 'Redirection vers Google Play…';
         boutonIOS.style.display = 'none';
-        if (PLAY_STORE_PUBLIC) {
-          texte.textContent = 'Redirection vers Google Play…';
-          window.location.replace(PLAY_STORE);
-        } else {
-          texte.textContent = 'PR arrive bientôt sur Android. En attendant, tu peux nous écrire pour être prévenu(e) de la sortie.';
-          aide.innerHTML = '<a href="mailto:contact@prapp.fr?subject=PR%20sur%20Android">contact@prapp.fr</a>';
-        }
+        window.location.replace(PLAY_STORE);
       }
     </script>
   </body>
